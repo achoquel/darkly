@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/redir.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="Redirections">
+          <h1>Redirections to external websites</h1>
+          <p class="lead">This website contains a page that seems to handle redirections to external websites like
+            social media. Unfortunately, it is not protected.</p>
+          <hr>
+          <p class="lead">On the footer of the website, there are icons that redirects us to social medias by using a
+            page named redirect, that takes an argument as the redirection url / site name.<br>
+            It is unfortunately not protected and we can give it any site that we want.<br>
+            <code>http://192.168.56.101/index.php?page=redirect&site=42.fr</code><br>
+            The flag is: B9E775A0291FED784A2D9680FCFAD7EDD6B8CDF87648DA647AAF4BBA288BCAB3
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">By not verifying the url of the site that we give as an argument, someone could trick peoples
+            to click on this link and getting redirected to a malicious website.<br>In cases of bank services or
+            marketplaces, it could be extremely dangerous.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            You can simply add a check on the page to verify that the url is authorized and then redirect the user.<br>
+            In C# for example:
+            <code>
+void redirect(string url)
+{
+  if (!string.IsNullOrEmpty(url))
+  {
+    switch(url)
+    {
+      case "facebook":
+        Response.Redirect("https://facebook.com/");
+        break;
+      case "twitter":
+        Response.Redirect("https://twitter.com/");
+        break;
+      default:
+        Response.Redirect("http://192.168.56.101/");
+        break;
+    }
+  }
+  ...
+}
+            </code>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

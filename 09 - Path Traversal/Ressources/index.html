@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/pt.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="Path Traversal">
+          <h1>Path Traversal</h1>
+          <p class="lead">On this site, we navigate by using a request to a GET endpoint named page. It is not secured and allow us to access files on the server like /etc/passwd.</p>
+          <hr>
+          <p class="lead">
+            When navigating on the website, we use an endpoint named page. It takes as an argument the name of the page that we want to access. It is not protected and we can do some path traversal to access files on the server that hosts the website.<br><br>
+            In this example, we can access /etc/passwd by simply going up on the file system until we get to the right place:
+            <code>http://192.168.56.101/?page=../etc/passwd
+http://192.168.56.101/?page=../../etc/passwd
+http://192.168.56.101/?page=../../../etc/passwd
+...
+http://192.168.56.101/?page=../../../../../../../etc/passwd &lt- Correct path !</code>
+            <br><br>
+            The flag is b12c4b2cb8094750ae121a676269aa9e2872d07c06e429d25a63196ec1c8c1d0
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">We can access every file on the server.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            The fix is kinda the same as for the redirections. We simply need to add some backend protection on the endpoint to redirect on the pages that we want and not on everything that we request:<br>
+            In C# for example:
+            <code>
+void page(string url)
+{
+  if (!string.IsNullOrEmpty(url))
+  {
+    switch(url)
+    {
+      case "member":
+        Response.Redirect("http://192.168.56.101/?page=member");
+        break;
+      case "signin":
+        Response.Redirect("http://192.168.56.101/?page=signin");
+        break;
+      ....
+      default:
+        Response.Redirect("http://192.168.56.101/");
+        break;
+    }
+  }
+  ...
+}
+            </code>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

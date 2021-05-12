@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/xss.png" class="img-thumbnail rounded mx-auto d-block img-top" alt="XSS">
+          <h1>XSS on Media page</h1>
+          <p class="lead">On the home page, an image has a link that redirects to a page that loads media using an
+            object tag. It is vulnerable to XSS</p>
+          <hr>
+          <p class="lead">On this page, we can provide a src argument that will set the source of the image that we want
+            to display.</br>
+            We can inject a XSS by using data encoding in the URL. The flag triggers if a base64 encoding is used, but
+            there is other ways to trigger the XSS: </br>
+            <code>data:text/html,&ltscript>alert(1)&lt/script>
+
+data:text/html;charset=iso-8859-7,%3c%73%63%72%69%70%74%3e%61%6c%65%72%74%28%31%29%3c%2f%73%63%72%69%70%74%3e 
+(= &ltscript>alert(1)&lt/script>)
+
+data:text/html;base64,PHNjcmlwdD5hbGVydCgiSGVsbG8iKTs8L3NjcmlwdD4= 
+(= &ltscript>alert("Hello");&lt/script>)
+          </code>
+          <p class="lead"><br>
+            The flag is: 928D819FC19405AE09921A2B71227BD9ABA106F9D2D37AC412E9E5A750F1506D
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">The risks are really high with this vulnerability. We can inject code to deface the page, to
+            redirect the user to another website, or event to steal the administrator cookie to usurp his identity on
+            the website.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            As always, do not trust what the user inputs in an URL or a form. Always verify what has been typed.<br>
+            For this page, a simple server side verification would have been enough, to check what image we want to
+            display and mostly to restrict the actions to only the available ones.<br>
+            In C# for example:
+            <code>
+string GetMediaUrl(string src)
+{
+  if (!string.IsNullOrEmpty(src))
+  {
+    switch(src)
+    {
+      case "nsa":
+        return "http://192.168.56.101/images/nsa_prism.jpg";
+        break;
+      ...
+      default:
+        return ("http://192.168.56.101/images/not_found.jpg");
+        break;
+    }
+  }
+    ...
+}
+           </code>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

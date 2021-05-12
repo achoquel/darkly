@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/header.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="Headers Modification">
+          <h1>Headers Modification
+          </h1>
+          <p class="lead">I'm an Albatraoz</p>
+          <hr>
+          <p class="lead">
+            I don't really see the point here. It is not really a vulnerability, or maybe the real vulnerability are the comments that might have been forgotten on the page when debugging ?
+            In any way, on the page there are long comments, one saying that you must be "cumming" from nsa.gov to continue.
+            We modify our Referer header and we set it to nsa.gov:
+            <code>curl -H "Referer: https://nsa.gov/" http://192.168.56.101/?page=e43ad1fdc54babe674da7c7b8f0127bde61de3fbe01def7d00f151c2fcca6d1c </code><br>
+            A new comment appears, asking us to use the browser ft_bornToSec. To do it, we can modify the User-Agent header:
+            <code>curl -H "Referer: https://nsa.gov/" -H "User-Agent: ft_bornToSec" http://192.168.56.101/?page=e43ad1fdc54babe674da7c7b8f0127bde61de3fbe01def7d00f151c2fcca6d1c </code>
+
+            <br><br>
+            The flag is F2A29020EF3132E01DD61DF97FD33EC8D7FCD1388CC9601E7DB691D17D4D6188
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">If the vulnerability is the Header modification, I guess that if you find the good ones, you could have access in this case to sensitive data, but I don't really see why you would do things like that><br><br>
+          If the real problems are the comments, this could be dangerous depending of what you write in them.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            Don't display content depending on Headers, but do server side verifications about the user role and permissions instead.<br>
+            If the problems are the comments, double check what you write, and review your PR to avoid letting them in your code :)
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

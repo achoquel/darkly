@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/form.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="Unverified form">
+          <h1>Unverified form</h1>
+          <p class="lead">A form is a quick and easy way to allow a user to send data to a website, but it must be protected and the data sent must be verified, which is unlikely on this website.</p>
+          <hr>
+          <p class="lead">
+            On the Survey page, we can vote for peoples by assigning them a mark between 1-10.<br>
+            This form is unfortunately not protected, and you can send any number that you want. There is no server side validation.
+            <br><br>
+            The flag is 03A944B434D5BAFF05F46C4BEDE5792551A2595574BCAFC9A6E25F67C382CCAA
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">In this case, we can fake the results by boosting someone by sending a really big mark. In general, unprotected forms can be used to send unwanted datas to create bugs, fake polls, etc</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            This is a really simple fix, just check for the value that is sent by the form.
+            <code>
+if (nb >= 1 && nb <= 10)
+{
+  //Data is ok
+  ...
+}
+            </code>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

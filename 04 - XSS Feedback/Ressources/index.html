@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/xss.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="XSS">
+          <h1>XSS on Feedback page</h1>
+          <p class="lead">On this page, the form that is sent to the server is not secured, and we can insert malicious
+            javascript on the page to trick the user.</p>
+          <hr>
+          <p class="lead">Oh the feedback page, we can see a form that will add what we write in it on the page when
+            submitted. Unfortunately, it is nor well secured, and if we send some script in it, it will be executed on
+            the page.</br></br>
+
+            We simply need to write "script" in any of the inputs to trigger the flag.</br>
+            We can also achieve it by executing the script in the Ressources folder:
+          <code>curl -X POST -F "txtName=script" -F "mtxtMessage=script" -F "btnSign=Sign Guestbook" http://192.168.56.101/index.php?page=feedback</code>
+          <br>
+            The flag is: 0FBB54BBF7D099713CA4BE297E1BC7DA0173D8B3C21C1811B916A3A86652724E
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">The risks are really high with this vulnerability. We can inject code to deface the page, to
+            redirect the user to another website, or event to steal the administrator cookie to usurp his identity on
+            the website.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            Before inserting an user input on a webpage, it must be verified. We can achieve this in two steps: a
+            frontend verification and a backend verification.<br><br>
+            The frontend verification, usually done in javascript, will check what the user is typing and display an
+            error message and lock the form so the user can't submit text that he is not allowed to write.<br><br>
+            The backend verification will basically do the same thing but on the server, where the user cannot modify
+            anymore what he entered. This verification is the most important, because the user can still trick the
+            frontend validation by intercepting the request, and then modifying its content with softwares like
+            BurpSuite.<br><br>
+            For example, in C#, we can use DataAttributes on our models to do the frontend validations:
+            <code>
+public class FeedbackFormViewModel
+{
+  [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$", ErrorMessage = "Characters are not allowed.")]
+  public string TxtName { get; set; }
+
+  ...
+}
+            </code>
+            and then do a backend validation in our function:
+            <code>
+void OnFeedBackFormSubmit(FeedbackFormViewModel vm)
+{
+  if (!string.IsNullOrEmpty(vm.TxtName) && Regex.Match(vm.TxtName, @"^[a-zA-Z''-'\s]{1,40}$").Success)
+  {
+    //do our stuff
+    ...
+  }
+}
+</code>
+
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

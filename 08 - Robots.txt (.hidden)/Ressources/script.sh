@@ -1,0 +1,1 @@
+wget -r --no-parent -e robots=off --reject "index.html*" http://192.168.56.101/.hidden/ && cd 192.168.56.101/.hidden && grep -r -E "[0-9]" ./

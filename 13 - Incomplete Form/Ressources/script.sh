@@ -1,0 +1,1 @@
+curl -X POST -F "mail=toto" -F "Submit=submit" http://192.168.56.101/index.php?page=recover > result.html

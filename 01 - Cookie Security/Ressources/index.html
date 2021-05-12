@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/cookie.jpg" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="Cookie Management">
+          <h1>Cookie Management</h1>
+          <p class="lead">We can modify the cookie that the website assign us to be granted administrator permissions.
+          </p>
+          <hr>
+          <p class="lead">If we inspect the website cookies, we can see one named I_am_admin with a value of
+            68934a3e9455fa72420237eb05902327.</br>
+            This is just a simple md5 hash of the word "false".</br></br>
+
+            If we hash "true" with md5 and replace the cookie value with it, we are admins. Yay !</br></br>
+
+            "true" hashed in md5 is b326b5062b2f0e69046810717534cb09</br>
+            We replace the actual cookie value by using the Developper tools and we get the flag.</br></br>
+
+            The flag is: df2eb4ba34ed059a1e3e89ff4dfc13445f104a1a52295214def1c4fb1693a5c3</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">The risks are really high with this vulnerability, you could do litteraly what you want on the
+            website. Getting administrator rights should not be handled this way.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">Serioulsy, why would you do that ?</br>
+            There is plenty of other ways to handle administrator rights, you could put a boolean inside your user
+            object and do backend tests to display what the admin should see with it, but the final user should not have
+            access to the value and be able to modify it.<br><br>
+            For example, in C#:<br><br>
+            In your User class:</p>
+          <code>
+public class User
+{
+  public bool IsAdmin { get; set; } = false;
+  ....
+}
+            
+
+            </code>
+          <p class="lead">
+            In your Web Page:</p>
+          <code>
+@if (currentUser.IsAdmin)
+  {
+    &ltdiv class="super-secret-content">
+      ....
+    &lt/div>
+  }
+
+  &ltdiv class="public-content">
+    ...
+  &lt/div>
+          </code>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

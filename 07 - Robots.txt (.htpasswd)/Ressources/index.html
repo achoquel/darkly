@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/files.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="Unrestricted access to htpasswd">
+          <h1>Unrestricted access to htpasswd</h1>
+          <p class="lead">The robots.txt file is meant to prevent robots from accessing some folders and file, but it also reveals their location, and if the access is not protected, it is easy to collect sensitive datas.</p>
+          <hr>
+          <p class="lead">
+            When inspecting the robots.txt file, we can see that it mentions two directories:
+            <code>User-agent: *
+Disallow: /whatever
+Disallow: /.hidden</code><br>
+              Inside the /whatever folder, we can find a file named .htpasswd. It contains an username and a password:
+              <code>root:8621ffdbc5698829397d97767ac13db3</code><br>
+              The password is hashed in md5, and it is reversed for "dragon".<br>
+              This credentials can be used to connect to the admin area of the website, accessible at:
+              <code>http://192.168.56.101/admin/</code>
+            <br><br>
+            The flag is: d19b4823e0d5600ceed56d5e896ef328d7a2b9e7ac7e80f4fcdb9b10bcb3e7ff
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">You can log in to the admin part of the website. Do I need to say more ?</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            The /whatever folder is not protected by a htaccess file. Adding one would solve the problem.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

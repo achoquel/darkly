@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/files.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="Unrestricted access to hidden folder">
+          <h1>Unrestricted access to hidden folder</h1>
+          <p class="lead">The robots.txt file is meant to prevent robots from accessing some folders and file, but it also reveals their location, and if the access is not protected, it is easy to collect sensitive datas.</p>
+          <hr>
+          <p class="lead">
+            When inspecting the robots.txt file, we can see that it mentions two directories:
+            <code>User-agent: *
+Disallow: /whatever
+Disallow: /.hidden</code><br>
+              Inside the /.hidden folder, we can find a lot of folders, each of them containing more folders and READMEs files.<br>
+              By using wget, we can easily download them all and find the flag:<br><br>
+              <code>wget -r --no-parent -e robots=off --reject "index.html*" http://192.168.56.101/.hidden/</code>
+              -r: recusively<br>
+--no-parent: avoid to download all the root files etc by going to the ../ route.<br>
+-e robots=off: wget won't care about the robots.txt file, that normally prevents robots to access certain parts of a website (here /.hidden for example).<br>
+--reject "index.html*": avoid to download the .html files that make the navigation possible between the folders<br><br>
+We then search for the flag inside all files:<br>
+<code>grep -r -E "[0-9]" ./</code>
+-r: recursively<br>
+-E: using a Regular Expression, here [0-9] (any match from 0 to 9)
+            <br><br>
+            The flag is 99dde1d35d1fdd283924d84e6d9f1d820, it is located at <code>/.hidden/whtccjokayshttvxycsvykxcfm/igeemtxnvexvxezqwntmzjltkt/lmpanswobhwcozdqixbowvbrhw/</code>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">Because the folder is not protected by a htaccess file, everyone can access it and get the data it contains.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            The /.hidden folder is not protected by a htaccess file. Adding one would solve the problem.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/fu.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="File Upload extension spoofing">
+          <h1>File Upload extension spoofing</h1>
+          <p class="lead">The form to upload an image to the website is poorly protected and we can send any file type by modifying it's MIME type.</p>
+          <hr>
+          <p class="lead">
+            On the Add Images page, there is a form that allow us to send images to the server. When uploading an image, it will be stored in a /tmp folder, and we get the exact path of the file that we uploaded.
+            The form has a MIME type verification, that should prevent users to upload random files to the server.<br>
+            However, we can use some tricks to upload any file types.<br><br>
+            The first is by using cURL to send a POST request to the endpoint, with the Content-Type of the file modified:
+            <code>curl -X POST -F "uploaded=@test.php;type=image/jpeg" -F "Upload=Upload" http://192.168.56.101/index.php?page=upload</code>
+            Here we can see that we send a .php file, but we say that its type is actually a .jpeg. It will be accepted by the server and our file will be uploaded.<br><br>
+            The other way is by using a tool named BurpSuite. One of its feature is to intercept every requests that is made on a website, to allow us to modify them. By using it, we can directly modify the Content-Type of the file inside the request:<br>
+            <img src="../../WebViewer/img/burp.png" class="rounded img-thumbnail mt-5 img-fluid" alt="Burp intercepting the request" />
+            <br><br>
+            The flag is b12c4b2cb8094750ae121a676269aa9e2872d07c06e429d25a63196ec1c8c1d0
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">We can upload any file to the server... even .php ones to create fake pages :)</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            First of all, the file name should be verified. Here we clearly uploaded a file named xxxx.php, and the server is not looking at all at the file extension, but only at the MIME type. We also need to check for double extensions, like xxx.jpeg.php<br><br>
+            Then, for the name itself, every special characters should be removed to avoid Path Traversal attacks. It is better if the named is changed by the server when storing the file to avoid any problem.<br><br>
+            We also need to check if a file of the same name doesn't exists so we don't overwrite it.<br><br>
+            It is better to run any file through an antivirus or a sandbox if possible.<br><br>
+            Finally, avoid to leak the file location, as it can be used to find other peoples files. If possible, store the file itself in a database. If not, try to create a table linking the path to the file to an id, and create a function that will display the file depending on the Id.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

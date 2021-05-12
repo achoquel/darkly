@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/bf.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="Password Complexity">
+          <h1>Password Complexity</h1>
+          <p class="lead">A strong password can take years to crack. But on this website, the password complexity
+            required is too low and a bruteforce attack is very effective.</p>
+          <hr>
+          <p class="lead">On the login page, we can attempt a bruteforce attack to try to log in as root or admin
+            users.<br>
+            To achieve that, we can use a program called thc-hydra, that is a bruteforcer.<br>
+            We execute the following command:<br>
+            <code>hydra -l root -P pw -fV 192.168.56.101 http-get-form "/index.php:page=signin&username=^USER^&password=^PASS^&Login=Login:S=The flag is"</code><br>
+            -l: specifies the username<br>
+            -p: specifies the password dictionnary file that we are going to use<br>
+            -f: stop at first success<br>
+            -V: will show all tries<br><br>
+            "/index.php:page=signin&username=^USER^&password=^PASS^&Login=Login:S=The flag is"<br>
+            This parameter is of the form 'page':'options':'success/fail message'<br><br>
+            Hydra will automatically replace ^USER^ and ^PASS^ with the credentials that it tests.<br><br>
+            After a few seconds, we have a result, the passwords for both users is "shadow". We can now log in and get
+            the flag.<br><br>
+            The flag is: B3A6E43DDF8B4BBB4125E5E7D23040433827759D4DE1C04EA63907479A80A6B2
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">By allowing passwords that weak, bruteforces attacks will be very fast and all of the users of
+            the website could be hacked in less than an hour if they all have weak passwords.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">
+            In this case, there are a lot of things to do.<br>
+            First would be to send a POST request instead of a GET request, because everyone will be able to see your
+            cedentials on the browser navigation bar, as the url would be like: <code>http://192.168.56.101/index.php?page=signin&username=login&password=password&Login=Login#</code><br>
+            Then, there is no attempt limitation on the form, which means that a bruteforce will be very easy. A way to
+            counter that would be to add a captcha verification after several fails, or to lock the account for a
+            certain ammount of time.<br><br>
+            You could also add some MFA to ensure that even if the attacker gets the password of the user, he can't log
+            in.<br><br>
+            For the passwords themselves, they are really weak. You should at least ask for 1 upper case, 1 lower case,
+            1 digit, 1 special character and a length of 8 chars.<br><br>
+            Another thing is the storage of the passwords. By using the SQL injections on the Member and Images pages, I
+            was able to dump the table that contains the users credentials. In the database, the passwords are stored
+            hashed in md5.<br><br>
+            <code>1 UNION ALL SELECT NULL, concat(username,0x3a,password) FROM Member_Brute_Force.db_default</code></p>
+            <div class="table-responsive">
+              <table class="table table-striped table-hover table-bordered table-dark ">
+                <thead>
+                  <tr>
+                    <th scope="col">username</th>
+                    <th scope="col">password</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">root</th>
+                    <td>3bf1114a986ba87ed28fc1b5884fc2f8</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">admin</th>
+                    <td>3bf1114a986ba87ed28fc1b5884fc2f8</td>
+                  </tr>
+                </tbody>
+              </table>
+            <p class="lead">They are easily reversable since md5 is not that secured. It would be better to encrypt them with Argon2id
+            or bcrypt. It would be also a great addition to add a salt key to them.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

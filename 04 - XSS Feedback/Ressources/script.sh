@@ -1,0 +1,1 @@
+curl -X POST -F "txtName=script" -F "mtxtMessage=script" -F "btnSign=Sign Guestbook" http://192.168.56.101/index.php?page=feedback > ./result.html

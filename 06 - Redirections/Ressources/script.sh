@@ -1,0 +1,1 @@
+curl -X GET "http://192.168.56.101/index.php?page=redirect&site=https://google.com" > ./result.html

@@ -1,0 +1,1 @@
+curl -X POST -F "sujet=2" -F "valeur=100000" http://192.168.56.101/?page=survey > result.html

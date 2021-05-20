@@ -35,7 +35,7 @@ Disallow: /.hidden</code><br>
               -r: recusively<br>
 --no-parent: avoid to download all the root files etc by going to the ../ route.<br>
 -e robots=off: wget won't care about the robots.txt file, that normally prevents robots to access certain parts of a website (here /.hidden for example).<br>
---reject "index.html*": avoid to download the .html files that make the navigation possible between the folders<br><br>
+--reject "index.html*": avoid to download the .html files that make the navigation possible between the folders on a web browser.<br><br>
 We then search for the flag inside all files:<br>
 <code>grep -r -E "[0-9]" ./</code>
 -r: recursively<br>

@@ -32,7 +32,7 @@
 
             We see that we have 5 users, and one of them is named GetThe Flag.</br></br>
 
-            We can exploit this injection to dump the database by using an UNION injection:
+            We can exploit this injection to dump the database by using an UNION based injection:
             <code>1 UNION ALL SELECT NULL, schema_name FROM information_schema.schemata--</code><br>
 
             What it does is that we do our first querry normaly, and we do an UNION of the result with the result of our
@@ -40,8 +40,7 @@
 
             By executing this request, we get 6 databases: </br></br>
 
-            - information_schema - This database holds all the structural informations and some metadatas. It will be
-            very helpful to scan each database and to get their structures.</br>
+            - information_schema</br>
             - Member_Brute_Force</br>
             - Member_Sql_Injection</br>
             - Member_guestbook</br>
@@ -59,7 +58,7 @@
 
             We can get the column structure of each tables by doing</br>
             <code>1 UNION ALL SELECT NULL, column_name FROM information_schema.COLUMNS --</code><br>
-            If we assume that each table has an Id column as it's first column, we can safely say that the databases
+            If we assume that each table has an 'Id' column as it's first column, we can safely say that the databases
             tables structures are:</br>
           <p>
 
@@ -196,7 +195,7 @@
             </table>
           </div>
           <p class="lead">
-            We decrypt the countersign of the user: 5ff9d0165b4f92b14994e5c685cdce28 -> FortyTwo</br>
+            We decrypt the countersign of the user (md5): 5ff9d0165b4f92b14994e5c685cdce28 -> FortyTwo</br>
             To lower char: fortytwo</br>
             Sh256 on it: 10a16d834f9b1e4068b25c4c46fe0284e99e44dceaf08098fc83925ba6310ff5<br><br>
             The flag is : 10a16d834f9b1e4068b25c4c46fe0284e99e44dceaf08098fc83925ba6310ff5</p>

